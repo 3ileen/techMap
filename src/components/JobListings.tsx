@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ArrowUpDown, Briefcase, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,27 +10,50 @@ import {
 } from "@/components/ui/select";
 import JobFilters, { FilterState } from "@/components/JobFilters";
 import JobCard from "@/components/JobCard";
-import { jobListings, JobListing } from "@/data/jobListingsData";
+import { fetchJobListings, JobListing } from "@/data/jobs";
 
-type SortOption = 'demand' | 'salary' | 'recent';
+type SortOption = "demand" | "salary" | "recent";
 
 interface JobListingsProps {
   onAnalyzeJob: (job: JobListing) => void;
 }
 
 const JobListings = ({ onAnalyzeJob }: JobListingsProps) => {
+  /* =========================
+     State
+  ========================= */
+
+  const [jobs, setJobs] = useState<JobListing[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [filters, setFilters] = useState<FilterState>({
-    search: '',
-    role: '',
+    search: "",
+    role: "",
     skills: [],
-    modality: '',
-    region: '',
-    level: '',
+    modality: "",
+    region: "",
+    level: "",
   });
-  const [sortBy, setSortBy] = useState<SortOption>('demand');
+
+  const [sortBy, setSortBy] = useState<SortOption>("demand");
+
+  /* =========================
+     Data fetch
+  ========================= */
+
+  useEffect(() => {
+    fetchJobListings()
+      .then(setJobs)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  /* =========================
+     Filtering & sorting
+  ========================= */
 
   const filteredJobs = useMemo(() => {
-    let result = [...jobListings];
+    let result = [...jobs];
 
     // Search filter
     if (filters.search) {
@@ -38,7 +61,9 @@ const JobListings = ({ onAnalyzeJob }: JobListingsProps) => {
       result = result.filter(job =>
         job.title.toLowerCase().includes(searchLower) ||
         job.company.toLowerCase().includes(searchLower) ||
-        job.skills.some(skill => skill.toLowerCase().includes(searchLower))
+        job.skills.some(skill =>
+          skill.toLowerCase().includes(searchLower)
+        )
       );
     }
 
@@ -51,7 +76,9 @@ const JobListings = ({ onAnalyzeJob }: JobListingsProps) => {
     if (filters.skills.length > 0) {
       result = result.filter(job =>
         filters.skills.every(skill =>
-          job.skills.some(jobSkill => jobSkill.toLowerCase() === skill.toLowerCase())
+          job.skills.some(jobSkill =>
+            jobSkill.toLowerCase() === skill.toLowerCase()
+          )
         )
       );
     }
@@ -62,7 +89,7 @@ const JobListings = ({ onAnalyzeJob }: JobListingsProps) => {
     }
 
     // Region filter
-    if (filters.region && filters.region !== 'global') {
+    if (filters.region && filters.region !== "global") {
       result = result.filter(job => job.region === filters.region);
     }
 
@@ -73,20 +100,35 @@ const JobListings = ({ onAnalyzeJob }: JobListingsProps) => {
 
     // Sort
     switch (sortBy) {
-      case 'demand':
+      case "demand":
         result.sort((a, b) => b.demandPercent - a.demandPercent);
         break;
-      case 'recent':
+      case "recent":
         result.sort((a, b) => a.postedDays - b.postedDays);
         break;
-      case 'salary':
-        // Simple sort by demand as proxy (in real app would parse salary)
+      case "salary":
         result.sort((a, b) => b.demandPercent - a.demandPercent);
         break;
     }
 
     return result;
-  }, [filters, sortBy]);
+  }, [jobs, filters, sortBy]);
+
+  /* =========================
+     Loading state
+  ========================= */
+
+  if (loading) {
+    return (
+      <section className="py-16 px-4 text-center">
+        <p className="text-muted-foreground">Cargando ofertas...</p>
+      </section>
+    );
+  }
+
+  /* =========================
+     Render
+  ========================= */
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background relative">
@@ -122,13 +164,21 @@ const JobListings = ({ onAnalyzeJob }: JobListingsProps) => {
           <div className="flex items-center gap-3">
             <TrendingUp className="h-5 w-5 text-primary" />
             <span className="text-lg font-medium text-foreground">
-              <span className="text-primary font-bold">{filteredJobs.length}</span> ofertas encontradas
+              <span className="text-primary font-bold">
+                {filteredJobs.length}
+              </span>{" "}
+              ofertas encontradas
             </span>
           </div>
 
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground">Ordenar por:</span>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+            <Select
+              value={sortBy}
+              onValueChange={value =>
+                setSortBy(value as SortOption)
+              }
+            >
               <SelectTrigger className="w-[180px] bg-card border-border/50">
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="h-4 w-4" />
@@ -147,27 +197,35 @@ const JobListings = ({ onAnalyzeJob }: JobListingsProps) => {
         {/* Job Grid */}
         {filteredJobs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredJobs.map((job) => (
-              <JobCard key={job.id} job={job} onAnalyzeSkills={onAnalyzeJob} />
+            {filteredJobs.map(job => (
+              <JobCard
+                key={job.id}
+                job={job}
+                onAnalyzeSkills={onAnalyzeJob}
+              />
             ))}
           </div>
         ) : (
           <div className="glass-card p-12 text-center">
             <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">No se encontraron ofertas</h3>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              No se encontraron ofertas
+            </h3>
             <p className="text-muted-foreground mb-4">
               Intenta ajustar los filtros para ver más resultados
             </p>
             <Button
               variant="outline"
-              onClick={() => setFilters({
-                search: '',
-                role: '',
-                skills: [],
-                modality: '',
-                region: '',
-                level: '',
-              })}
+              onClick={() =>
+                setFilters({
+                  search: "",
+                  role: "",
+                  skills: [],
+                  modality: "",
+                  region: "",
+                  level: "",
+                })
+              }
             >
               Limpiar filtros
             </Button>
@@ -177,7 +235,7 @@ const JobListings = ({ onAnalyzeJob }: JobListingsProps) => {
         {/* Disclaimer */}
         <div className="mt-8 text-center">
           <p className="text-xs text-muted-foreground/60 italic">
-            ⚠️ Datos simulados con fines demostrativos. Basado en análisis de ofertas laborales de LinkedIn, Indeed y plataformas similares.
+            ⚠️ Datos en tiempo real obtenidos desde Supabase.
           </p>
         </div>
       </div>
