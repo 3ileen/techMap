@@ -26,7 +26,7 @@ const JobAnalysis = ({ job, onBack }: JobAnalysisProps) => {
     return Math.round((checkedSkills.size / job.skills.length) * 100);
   }, [checkedSkills, job.skills.length]);
 
-  const radius = 50;
+  const radius = 54;
   const circumference = 2 * Math.PI * radius;
 
   return (
@@ -78,12 +78,11 @@ const JobAnalysis = ({ job, onBack }: JobAnalysisProps) => {
             <div className="glass-card p-6">
               <div className="flex items-center gap-6">
                 {/* Circular progress */}
-                <div className="relative w-40 h-40">
+                <div className="relative w-32 h-32">
                   <svg
                     className="w-full h-full -rotate-90"
                     viewBox="0 0 128 128"
-                    >
-
+                  >
                     <circle
                       cx="64"
                       cy="64"
@@ -125,8 +124,7 @@ const JobAnalysis = ({ job, onBack }: JobAnalysisProps) => {
 
                 {/* Text */}
                 <div>
-                  <h4 className="font-medium flex items-center gap-2 mb-1">
-                    <span className="text-primary">↗</span>
+                  <h4 className="font-medium mb-1">
                     Tu compatibilidad
                   </h4>
                   <p className="text-sm text-muted-foreground max-w-xs">
@@ -193,60 +191,83 @@ const JobAnalysis = ({ job, onBack }: JobAnalysisProps) => {
                   return (
                     <label
                       key={skill}
-                      className="flex items-center gap-3 cursor-pointer select-none"
+                      className="flex items-center justify-between gap-3 cursor-pointer select-none"
                     >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => toggleSkill(skill)}
-                        className="hidden"
-                      />
+                      {/* Left side */}
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleSkill(skill)}
+                          className="hidden"
+                        />
 
-                      {/* Check */}
-                      <div
-                        className={`
-                          w-5 h-5 rounded-full border
-                          flex items-center justify-center
-                          transition-all duration-300 ease-out
-                          ${
-                            checked
-                              ? "bg-primary border-primary scale-110 shadow-[0_0_10px_hsl(var(--primary))]"
-                              : "border-muted-foreground/40"
-                          }
-                        `}
-                      >
-                        <svg
+                        {/* Check */}
+                        <div
                           className={`
-                            w-3 h-3 text-primary-foreground
-                            transition-all duration-300
+                            w-5 h-5 rounded-full border
+                            flex items-center justify-center
+                            transition-all duration-300 ease-out
                             ${
                               checked
-                                ? "opacity-100 scale-100"
-                                : "opacity-0 scale-75"
+                                ? "bg-primary border-primary scale-110 shadow-[0_0_10px_hsl(var(--primary))]"
+                                : "border-muted-foreground/40"
                             }
                           `}
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={3}
                         >
-                          <path d="M5 13l4 4L19 7" />
-                        </svg>
+                          <svg
+                            className={`
+                              w-3 h-3 text-primary-foreground
+                              transition-all duration-300
+                              ${
+                                checked
+                                  ? "opacity-100 scale-100"
+                                  : "opacity-0 scale-75"
+                              }
+                            `}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={3}
+                          >
+                            <path d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+
+                        {/* Skill name */}
+                        <span
+                          className={`
+                            font-medium transition-colors duration-300
+                            ${
+                              checked
+                                ? "text-primary"
+                                : "text-foreground"
+                            }
+                          `}
+                        >
+                          {skill}
+                        </span>
                       </div>
 
-                      {/* Texto */}
-                      <span
-                        className={`
-                          font-medium transition-colors duration-300
-                          ${
-                            checked
-                              ? "text-primary"
-                              : "text-foreground"
-                          }
-                        `}
+                      {/* CTA */}
+                      <a
+                        href="https://example.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="
+                          text-xs font-medium
+                          px-3 py-1.5
+                          rounded-full
+                          border border-muted
+                          text-muted-foreground
+                          hover:text-primary
+                          hover:border-primary
+                          transition-colors
+                          whitespace-nowrap
+                        "
                       >
-                        {skill}
-                      </span>
+                        Empieza a aprender
+                      </a>
                     </label>
                   );
                 })}
