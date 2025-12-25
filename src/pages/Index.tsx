@@ -5,8 +5,9 @@ import JobListings from "@/components/JobListings";
 import JobSelector from "@/components/JobSelector";
 import Dashboard from "@/components/Dashboard";
 import { JobListing } from "@/data/jobListingsData";
+import JobAnalysis from "@/components/JobAnalysis";
 
-type AppState = 'hero' | 'selector' | 'dashboard';
+type AppState = 'hero' | 'selector' | 'dashboard' | 'jobAnalysis';
 
 interface Selection {
   roleId: string;
@@ -33,7 +34,7 @@ const Index = () => {
       country: job.region === 'us' ? 'US' : job.region === 'eu' ? 'DE' : job.region === 'latam' ? 'MX' : 'US',
       hoursPerWeek: 10,
     });
-    setState('dashboard');
+    setState('jobAnalysis');
   };
 
   const handleSelect = (sel: Selection) => {
@@ -60,6 +61,13 @@ const Index = () => {
         {state === 'dashboard' && selection && (
           <Dashboard selection={selection} onBack={handleBack} />
         )}
+        {state === 'jobAnalysis' && selection && selectedJob && (
+          <JobAnalysis
+            job={selectedJob}
+            onBack={handleBack}
+          />
+        )}
+
       </main>
     </div>
   );
