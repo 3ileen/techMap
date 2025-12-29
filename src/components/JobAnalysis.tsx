@@ -251,7 +251,7 @@ const JobAnalysis = ({ job, onBack }: JobAnalysisProps) => {
 
                       {/* CTA */}
                       <a
-                        href="https://example.com"
+                        href={`https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(skill)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="
@@ -268,6 +268,8 @@ const JobAnalysis = ({ job, onBack }: JobAnalysisProps) => {
                       >
                         Empieza a aprender
                       </a>
+
+
                     </label>
                   );
                 })}
