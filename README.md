@@ -1,7 +1,7 @@
 
 ### Members
--3ileen (Eileen Apaza)
--jphants (Jorge Nuñez)
+- 3ileen (Eileen Apaza)
+- jphants (Jorge Nuñez)
 
 
 ### Backend & Database
