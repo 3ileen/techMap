@@ -47,24 +47,7 @@ const Hero = ({ onGetStarted }: HeroProps) => {
           </Button>
         </div>
 
-        {/* Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-          <FeatureCard
-            icon={<Target className="w-6 h-6" />}
-            title="Skills Demandadas"
-            description="Identifica las habilidades más buscadas para tu puesto objetivo"
-          />
-          <FeatureCard
-            icon={<TrendingUp className="w-6 h-6" />}
-            title="Match en Tiempo Real"
-            description="Visualiza tu compatibilidad con el mercado laboral actual"
-          />
-          <FeatureCard
-            icon={<Sparkles className="w-6 h-6" />}
-            title="Recomendaciones"
-            description="Recibe cursos y proyectos personalizados para cerrar brechas"
-          />
-        </div>
+        
       </div>
     </section>
   );
