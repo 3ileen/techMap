@@ -1,5 +1,8 @@
 
-LLMs were considered but excluded due to cost constraints.
+### Members
+-3ileen (Eileen Apaza)
+-jphants (Jorge Nuñez)
+
 
 ### Backend & Database
 - Extracted data is stored in **Supabase (Free Tier)**.
