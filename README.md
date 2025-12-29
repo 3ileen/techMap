@@ -1,7 +1,7 @@
 
 ### Members
-- @3ileen (Eileen Apaza)
-- @jphants (Jorge Nuñez)
+- [3ileen](https://github.com/3ileen)
+- [jphants](https://github.com/jphants)
 
 
 ### Backend & Database
